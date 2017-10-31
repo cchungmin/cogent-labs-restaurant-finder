@@ -1,0 +1,20 @@
+.grid {
+  max-width: 1080px;
+  margin: 0 auto;
+  list-style: none;
+  padding: 0;
+}
+
+.grid-sizer,
+.grid-item {
+  width: 20%;
+  height: 240px;
+}
+
+.grid-item.very-popular {
+  width: 40%;
+}
+
+.grid-item.popular {
+  width: 30%;
+}
