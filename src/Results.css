@@ -1,5 +1,5 @@
 .grid {
-  max-width: 1080px;
+  max-width: 600px;
   margin: 0 auto;
   list-style: none;
   padding: 0;
@@ -7,8 +7,11 @@
 
 .grid-sizer,
 .grid-item {
-  width: 20%;
-  height: 240px;
+  width: 25%;
+}
+
+.grid-item:hover {
+  cursor: pointer;
 }
 
 .grid-item.very-popular {
@@ -17,4 +20,24 @@
 
 .grid-item.popular {
   width: 30%;
+}
+
+.grid-item .result-inner {
+  margin: 1px;
+  background-color: #c8e6c9;
+  border-radius: 2px;
+}
+
+.grid-item.very-popular .result-inner {
+  background-color: #1b5e20;
+  color: #fff;
+}
+
+.grid-item.popular .result-inner {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.result-inner-container {
+  padding: 80px 20px;
 }

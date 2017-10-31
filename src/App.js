@@ -4,7 +4,7 @@ import Search from './Search';
 import Results from './Results';
 import './App.css';
 
-var foursquare = require('react-foursquare')({
+const foursquare = require('react-foursquare')({
   clientID: '42WJHV4VEVBQBUBZG41UYRSAQVGPB5TFRRGJLTE3WUDYAUNC',
   clientSecret: 'RYLXL42G0DK2NFXW0FGWCTH21C53EPXMOD1W1VGFEZWBPSZH'
 });
@@ -23,8 +23,8 @@ class App extends Component {
      this.state = {
        venues: [],
        pickedVenue: {},
-       keyword: '',
-       isPanelVisible: false
+       isPanelVisible: false,
+       keyword: ''
      };
    }
 
@@ -36,12 +36,29 @@ class App extends Component {
     foursquare.venues.getVenues(params)
       .then(res => {
         let venues = res.response.venues;
+        let pickedVenue = venues[Math.floor(Math.random() * venues.length)];
+        let pickedVenueMapUrl = (typeof pickedVenue === 'undefined') ?
+            params.ll : pickedVenue.location.lat + ',' +
+                pickedVenue.location.lng;
+
         this.setState({
           venues: venues,
-          pickedVenue: venues[Math.floor(Math.random() * venues.length)]　||
-              { name: 'Sorry, no result...' },
-          keyword: this.state.keyword
+          pickedVenue: pickedVenue || { name: 'Sorry, no result...' },
+          pickedVenueMapUrl: 'https://www.google.com/maps/search/?api=1&query=' +
+              pickedVenueMapUrl
         });
+      });
+  }
+
+  setPickedVenue(item) {
+    this.setState({
+      isPanelVisible: false,
+      pickedVenue: item
+    });
+
+    foursquare.venues.getVenue({ venue_id: item.id })
+      .then(res => {
+        console.log(res);
       });
   }
 
@@ -49,7 +66,7 @@ class App extends Component {
     this.getVenuesByKeyword();
   }
 
-  keyDownHandler() {
+  keyUpHandler() {
     this.setState({ isPanelVisible: true });
     this.getVenuesByKeyword();
   }
@@ -59,6 +76,8 @@ class App extends Component {
   }
 
   render() {
+    let t = this.state.pickedVenue.contact;
+    console.log(t);
     return (
       <div className="App">
         <header className="App-header">
@@ -68,18 +87,52 @@ class App extends Component {
         <div className="App-intro">
           <h2>Hey, how about this one?</h2>
           <p>{ this.state.pickedVenue.name }</p>
+          { typeof this.state.pickedVenue.contact !== 'undefined'?
+            <CtaContainer phone={ this.state.pickedVenue.contact.phone }
+                          mapUrl={ this.state.pickedVenueMapUrl }>
+            </CtaContainer>: null }
           <h3>Or, type something here:</h3>
           <Search
              onChange={ (event) => this.changeHandler(event) }
-             onKeyDown={ () => this.keyDownHandler() }
+             onKeyUp={ () => this.keyUpHandler() }
           />
         </div>
         <div className="results-panel">
-          { this.state.isPanelVisible ? <Results results={ this.state.venues }></Results>: null }
+          { this.state.isPanelVisible ?
+            <Results results={ this.state.venues }
+                     onClick={ (item) => this.setPickedVenue(item) }>
+            </Results>: null }
         </div>
       </div>
     );
   }
+}
+
+function CtaContainer(props) {
+  return (
+    <div className="cta-container">
+      { typeof props.phone !== 'undefined'?
+        <PhoneCta phone={ props.phone }>
+        </PhoneCta>: null }
+      <a className={`mdl-button mdl-js-button mdl-button--raised ${ typeof props.phone === 'undefined' ? 'mdl-button--colored' : ''}`}
+         target="_blank"
+         href={ props.mapUrl }>
+        Show Me the Map
+      </a>
+    </div>
+  );
+}
+
+function PhoneCta(props) {
+  return (
+    <span>
+      <a className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+         href={ `tel:${props.phone}` }>
+        Call Now
+      </a>
+      &nbsp; or &nbsp;
+    </span>
+  );
 }
 
 export default App;
