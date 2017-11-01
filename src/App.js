@@ -70,7 +70,6 @@ class App extends Component {
         this.setState({
           pickedVenue: res.response.venue
         });
-        console.log(res.response.venue)
       });
   }
 
