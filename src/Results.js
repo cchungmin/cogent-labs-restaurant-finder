@@ -2,18 +2,6 @@ import React, { Component } from 'react';
 import Masonry from 'react-masonry-component';
 import './Results.css';
 
-function SingleResult(props) {
-  return (
-    <li className={props.sizeClass} onClick={props.onClick}>
-      <div className="result-inner">
-        <div className="result-inner-container">
-          {props.name}
-        </div>
-      </div>
-    </li>
-  );
-}
-
 class Results extends Component {
   getSizeClassName(num) {
     let className = 'grid-item'
@@ -50,5 +38,17 @@ class Results extends Component {
     );
   }
 };
+
+function SingleResult(props) {
+  return (
+    <li className={props.sizeClass} onClick={props.onClick}>
+      <div className="result-inner">
+        <div className="result-inner-container">
+          {props.name}
+        </div>
+      </div>
+    </li>
+  );
+}
 
 export default Results;

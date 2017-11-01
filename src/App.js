@@ -2,12 +2,20 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import Search from './Search';
 import Results from './Results';
+import QueryString from 'query-string';
 import './App.css';
 
-const foursquare = require('react-foursquare')({
-  clientID: '42WJHV4VEVBQBUBZG41UYRSAQVGPB5TFRRGJLTE3WUDYAUNC',
-  clientSecret: 'RYLXL42G0DK2NFXW0FGWCTH21C53EPXMOD1W1VGFEZWBPSZH'
-});
+const DEFAULT_CONFIG = {
+  apiUrl: 'https://api.foursquare.com/v2',
+  mapUrl: 'https://www.google.com/maps/search/?api=1&query=',
+  locale: 'en'
+};
+
+const CREDENTIALS = {
+  v: '20171001',
+  client_id: '42WJHV4VEVBQBUBZG41UYRSAQVGPB5TFRRGJLTE3WUDYAUNC',
+  client_secret: 'RYLXL42G0DK2NFXW0FGWCTH21C53EPXMOD1W1VGFEZWBPSZH'
+};
 
 var params = {
   ll: '35.648795,139.702237',
@@ -20,6 +28,7 @@ class App extends Component {
   constructor(props) {
      super(props);
 
+     this.API = FourSquareAPI();
      this.state = {
        venues: [],
        pickedVenue: {},
@@ -33,33 +42,44 @@ class App extends Component {
       params.query = this.state.keyword;
     }
 
-    foursquare.venues.getVenues(params)
+    this.API.search(params)
       .then(res => {
         let venues = res.response.venues;
         let pickedVenue = venues[Math.floor(Math.random() * venues.length)];
-        let pickedVenueMapUrl = (typeof pickedVenue === 'undefined') ?
-            params.ll : pickedVenue.location.lat + ',' +
+        let pickedVenueMapUrl;
+
+        if (typeof pickedVenue === 'undefined') {
+          pickedVenue = { name: 'Sorry, no result...' };
+          pickedVenueMapUrl = params.ll;
+        } else {
+          this.setPickedVenue(pickedVenue);
+          pickedVenueMapUrl = pickedVenue.location.lat + ',' +
                 pickedVenue.location.lng;
+        }
 
         this.setState({
           venues: venues,
-          pickedVenue: pickedVenue || { name: 'Sorry, no result...' },
-          pickedVenueMapUrl: 'https://www.google.com/maps/search/?api=1&query=' +
-              pickedVenueMapUrl
+          pickedVenueMapUrl: DEFAULT_CONFIG.mapUrl + pickedVenueMapUrl
         });
       });
   }
 
   setPickedVenue(item) {
+    this.API.getVenueDetail({ venue_id: item.id })
+      .then(res => {
+        this.setState({
+          pickedVenue: res.response.venue
+        });
+        console.log(res.response.venue)
+      });
+  }
+
+  closePanel(item) {
     this.setState({
-      isPanelVisible: false,
-      pickedVenue: item
+      isPanelVisible: false
     });
 
-    foursquare.venues.getVenue({ venue_id: item.id })
-      .then(res => {
-        console.log(res);
-      });
+    this.setPickedVenue(item);
   }
 
   componentDidMount() {
@@ -76,8 +96,6 @@ class App extends Component {
   }
 
   render() {
-    let t = this.state.pickedVenue.contact;
-    console.log(t);
     return (
       <div className="App">
         <header className="App-header">
@@ -86,7 +104,29 @@ class App extends Component {
         </header>
         <div className="App-intro">
           <h2>Hey, how about this one?</h2>
-          <p>{ this.state.pickedVenue.name }</p>
+          <div className="picked-card mdl-card mdl-shadow--4dp">
+            <div className="mdl-card__media">
+              {/*  typeof this.state.pickedVenue.bestPhoto !== 'undefined'?
+              <img src={ this.state.pickedVenue.bestPhoto.prefix + this.state.pickedVenue.bestPhoto.suffix } width="173" height="157" border="0" alt=""/>: null ?*/}
+            </div>
+            <div className="mdl-card__supporting-text">
+              { this.state.pickedVenue.name }
+            </div>
+            <div className="mdl-card__supporting-text">
+              <ul>
+                {
+                  typeof this.state.pickedVenue.categories !== 'undefined' ?
+                    this.state.pickedVenue.categories.map(item => {
+                      return (
+                        <li key={item.id}>
+                          {item.shortName}
+                        </li>
+                      )
+                    }) : null
+                }
+              </ul>
+            </div>
+          </div>
           { typeof this.state.pickedVenue.contact !== 'undefined'?
             <CtaContainer phone={ this.state.pickedVenue.contact.phone }
                           mapUrl={ this.state.pickedVenueMapUrl }>
@@ -100,7 +140,7 @@ class App extends Component {
         <div className="results-panel">
           { this.state.isPanelVisible ?
             <Results results={ this.state.venues }
-                     onClick={ (item) => this.setPickedVenue(item) }>
+                     onClick={ (item) => this.closePanel(item) }>
             </Results>: null }
         </div>
       </div>
@@ -133,6 +173,38 @@ function PhoneCta(props) {
       &nbsp; or &nbsp;
     </span>
   );
+}
+
+function Request(urlString) {
+  return new Promise(
+    function(resolve, reject) {
+      fetch(urlString)
+        .then((response) => response.json())
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    }
+  )
+}
+
+function FourSquareAPI() {
+  return {
+    search: function(params) {
+      let urlString = DEFAULT_CONFIG.apiUrl + '/venues/search?' +
+        QueryString.stringify(params) + '&' + QueryString.stringify(CREDENTIALS);
+
+      return Request(urlString);
+    },
+    getVenueDetail: function(params) {
+      let urlString = DEFAULT_CONFIG.apiUrl + '/venues/' +
+          params.venue_id + '?' + QueryString.stringify(CREDENTIALS);
+
+      return Request(urlString);
+    }
+  }
 }
 
 export default App;

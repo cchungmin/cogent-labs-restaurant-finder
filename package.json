@@ -2,10 +2,10 @@
   "name": "cogent-labs-restaurant-finder",
   "version": "0.1.0",
   "private": true,
+  "main": "index.js",
   "dependencies": {
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-foursquare": "^1.0.3",
     "react-scripts": "1.0.14"
   },
   "scripts": {
@@ -13,20 +13,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            "es2015",
-            "react",
-            "env"
-          ]
-        }
-      ]
-    ]
   },
   "devDependencies": {
     "babel-polyfill": "^6.26.0",
@@ -36,7 +22,9 @@
     "babel-register": "^6.26.0",
     "babelify": "^8.0.0",
     "browserify": "^14.5.0",
+    "commonjs": "0.0.1",
     "jest-cli": "^21.2.1",
+    "query-string": "^5.0.1",
     "react-masonry-component": "^6.0.1"
   },
   "babel": {
