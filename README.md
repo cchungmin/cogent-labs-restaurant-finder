@@ -9,36 +9,36 @@ Below you will find some information on how to perform common tasks.<br>
 You can find the most recent version of this guide [here](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md).
 
 ## Contribution
-In your favorite terminal, type
+In your favorite terminal, type:
 
 ```
 npm install
 ```
 
-Start development server by typing
+Start development server by typing:
 
 ```
 npm start
 ```
 
-Once your development is finished, please write tests if necessary. Test can be run by typing
+Once your development is finished, please write tests if necessary. Proper tests are required for core functions. Test can be run by typing:
 
 ```
 npm test
 ```
 
-Finally, please make sure it passes production build. You can verify it by typing
+Finally, please make sure it passes production build. You can verify it by typing:
 
 ```
 npm build
 ```
 
 ## Reasoning Behind Technical Choices
-React is assigned for this project, so create-react-app component is decided after a little bit research. It is well-designed with WebPack and Babel, so it is very suitable for quick prototyping if React is decided for demonstration or even production level works. Masonry is decided for more interactive experience and dynamic layout. Redux was considered but finally was not chosen since the app tree is not super complicated and asynchronous calls were not heavily used. Since this task is very front-end focused, backend architecture is not implemented. Foursquare provides very reliable API service, so it is chosen for getting restaurant information.
+React is assigned for this project, so create-react-app component is decided after a little bit research. It is well-designed with WebPack and Babel, so it is very suitable for quick prototyping or even production level works, if React is decided. Masonry is decided for more interactive experience and dynamic layout. Redux was considered but finally was not chosen since the app tree is not super complicated and asynchronous calls were not heavily used. Since this task is very front-end focused, backend architecture is not implemented. Foursquare provides very reliable API service, so it is chosen for getting restaurant information. Material design library is chosen for advanced styles, since Material design is recommended, and I also have experience.
 
 
 ## Trade-offs
-Foursquare provides an official adaptor for React, but it has some problems during complications, since the code is not published in ES5 standard, so the compiler would complain about it. It might be a little bit too much to publish a new version to NPM, so I wrote a small version, and it passed the complication. However, if any new API would be added, developers should need write their own solutions, or should fire an issue to [the official repository](https://github.com/foursquare/react-foursquare).
+Foursquare provides an official adaptor for React, but it has some problems during complications, since the code is not published as an ES5 standard package, so the compiler would complain about it. It might be a little bit too much to publish a new version to NPM for now, so I wrote a small version, and it passed the complication. However, if any new API would be added, developers should  write solutions, or should fire an issue on [the official repository](https://github.com/foursquare/react-foursquare).
 
 A map view is mandatory in this project, and an embedded map was considered at the beginning. Foursquare officially works with OpenStreetMap and it has good data integration, but it is abandoned because the use case of this app is supposed for mobile users. I believe that providing a map link, which directly launch after a click, would be a more appropriate way for most of users instead of an embedded map.
 
@@ -46,5 +46,5 @@ By default, mobile number is presented as the main CTA, and map CTA would be the
 
 In search bar, requests would be sent frequently if inputs are too many. Dynamically requests might not be very ideal. Throttle or debounce could be applied if necessary.
 
-## contact
-If you have any questions or you are simply interested in my profile, please send [a mail](mailto:min427@gmail.com) or let's connect on [LinkedIn](https://www.linkedin.com/in/chungmincheng/). I am always enthusiastic in new front-end technologies. 
+## Contact
+If you have any questions or you are simply interested in my profile, please send [a mail](mailto:min427@gmail.com) or let's connect on [LinkedIn](https://www.linkedin.com/in/chungmincheng/). I am always enthusiastic in new front-end technologies.
