@@ -113,6 +113,7 @@ class App extends Component {
             <div className="mdl-card__supporting-text">
               <h5>{ this.state.pickedVenue.name }</h5>
               <h4>{ this.state.pickedVenue.rating || 'N/A' }</h4>
+              <p>{ typeof this.state.pickedVenue.hours !== 'undefined' ? `In service. ${this.state.pickedVenue.hours.status}` : 'Out of service' }</p>
             </div>
             <div className="mdl-card__supporting-text">
                 {

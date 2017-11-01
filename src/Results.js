@@ -49,7 +49,7 @@ function SingleResult(props) {
           {props.name}
         </div>
         <p>{props.mainCategoryName}</p>
-        <span>{props.count} { props.count === 1 ? 'Checkin' : 'Checkins'}</span>
+        <span>{props.count} { props.count <= 1 ? 'Checkin' : 'Checkins'}</span>
       </div>
     </li>
   );
