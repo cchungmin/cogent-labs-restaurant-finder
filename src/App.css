@@ -30,6 +30,19 @@
   padding: 30px 20px;
 }
 
+.picked-venue-icon {
+  background-color: #00e5ff ;
+  margin: 0 5px;
+  border-radius: 2px;
+}
+
+.search-panel {
+  padding: 30px 20px;
+  background-color: #00b2cc;
+  margin: 30px 0;
+  color: #fff;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

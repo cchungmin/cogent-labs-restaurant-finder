@@ -97,53 +97,57 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <main className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Cogent Labs Restaurant Finder</h1>
         </header>
-        <div className="App-intro">
+        <section className="App-intro">
           <h2>Hey, how about this one?</h2>
           <div className="picked-card mdl-card mdl-shadow--4dp">
             <div className="mdl-card__media">
-              {/*  typeof this.state.pickedVenue.bestPhoto !== 'undefined'?
-              <img src={ this.state.pickedVenue.bestPhoto.prefix + this.state.pickedVenue.bestPhoto.suffix } width="173" height="157" border="0" alt=""/>: null ?*/}
+              { typeof this.state.pickedVenue.bestPhoto !== 'undefined' ?
+                <img src={ this.state.pickedVenue.bestPhoto.prefix + 'width300' + this.state.pickedVenue.bestPhoto.suffix } alt={this.state.pickedVenue.name}/> : null
+              }
             </div>
             <div className="mdl-card__supporting-text">
-              { this.state.pickedVenue.name }
+              <h5>{ this.state.pickedVenue.name }</h5>
+              <h4>{ this.state.pickedVenue.rating || 'N/A' }</h4>
             </div>
             <div className="mdl-card__supporting-text">
-              <ul>
                 {
                   typeof this.state.pickedVenue.categories !== 'undefined' ?
                     this.state.pickedVenue.categories.map(item => {
                       return (
-                        <li key={item.id}>
-                          {item.shortName}
-                        </li>
+                        <span key={item.id}>
+                          <img className="picked-venue-icon"
+                               src={item.icon.prefix + '64' + item.icon.suffix}
+                               alt={item.icon.name} />
+                        </span>
                       )
                     }) : null
                 }
-              </ul>
             </div>
           </div>
           { typeof this.state.pickedVenue.contact !== 'undefined'?
             <CtaContainer phone={ this.state.pickedVenue.contact.phone }
                           mapUrl={ this.state.pickedVenueMapUrl }>
             </CtaContainer>: null }
-          <h3>Or, type something here:</h3>
+        </section>
+        <section className="search-panel">
+          <h3>Or, type something here</h3>
           <Search
              onChange={ (event) => this.changeHandler(event) }
              onKeyUp={ () => this.keyUpHandler() }
           />
-        </div>
-        <div className="results-panel">
+        </section>
+        <section className="results-panel">
           { this.state.isPanelVisible ?
             <Results results={ this.state.venues }
                      onClick={ (item) => this.closePanel(item) }>
             </Results>: null }
-        </div>
-      </div>
+        </section>
+      </main>
     );
   }
 }

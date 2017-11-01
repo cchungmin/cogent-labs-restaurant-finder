@@ -1,5 +1,5 @@
 .grid {
-  max-width: 600px;
+  max-width: 750px;
   margin: 0 auto;
   list-style: none;
   padding: 0;
@@ -39,5 +39,7 @@
 }
 
 .result-inner-container {
-  padding: 80px 20px;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 40px 20px;
 }

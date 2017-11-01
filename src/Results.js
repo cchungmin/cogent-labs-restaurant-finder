@@ -30,6 +30,8 @@ class Results extends Component {
               <SingleResult
                 key={item.id}
                 name={item.name}
+                mainCategoryName={item.categories[0].name}
+                count={item.stats.checkinsCount}
                 sizeClass={this.getSizeClassName(item.stats.checkinsCount)}
                 onClick={() => this.props.onClick(item)}/>
           )
@@ -46,6 +48,8 @@ function SingleResult(props) {
         <div className="result-inner-container">
           {props.name}
         </div>
+        <p>{props.mainCategoryName}</p>
+        <span>{props.count} { props.count === 1 ? 'Checkin' : 'Checkins'}</span>
       </div>
     </li>
   );
