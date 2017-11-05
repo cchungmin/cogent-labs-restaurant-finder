@@ -1,7 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Results from './Results';
+import Results, {SingleResult} from './Results';
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
+it('should fire click event', () => {
+  const onClick = sinon.spy();
+  const results = [];
+  const wrapper = shallow(
+    <Results onClick={onClick} results={results}/>
+  );
+
+  wrapper.simulate('click');
+  expect(onClick.calledOnce).toEqual(true);
 });

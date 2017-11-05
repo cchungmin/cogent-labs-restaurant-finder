@@ -2,14 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Search from './Search';
 
-it('renders without crashing', () => {
+it('should fire change event', () => {
+  const onInputChange = sinon.spy();
   const searchBox = shallow(
-    <Search labelOn="On" labelOff="Off" />
+    <Search onChange={onInputChange} />
   );
 
-  searchBox.text('Off')
+  searchBox.find('input').simulate('change');
+  expect(onInputChange.calledOnce).toEqual(true);
+});
 
-  expect(searchBox.text()).toEqual('Your favorite food type?');
-  //searchBox.find('input').simulate('keyDown');
-  // expect(searchBox.text()).toEqual('On');
+it('should fire keyDown event', () => {
+  const onInputKeyUp = sinon.spy();
+  const searchBox = shallow(
+    <Search onKeyUp={onInputKeyUp} />
+  );
+
+  searchBox.find('input').simulate('keyUp');
+  expect(onInputKeyUp.calledOnce).toEqual(true);
 });
