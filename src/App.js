@@ -47,6 +47,7 @@ class App extends Component {
         let venues = res.response.venues;
         let pickedVenue = venues[Math.floor(Math.random() * venues.length)];
         let pickedVenueMapUrl;
+        console.log(venues);
 
         if (typeof pickedVenue === 'undefined') {
           pickedVenue = { name: 'Sorry, no result...' };

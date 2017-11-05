@@ -46,5 +46,7 @@ By default, mobile number is presented as the main CTA, and map CTA would be the
 
 In search bar, requests would be sent frequently if inputs are too many. Dynamically requests might not be very ideal. Throttle or debounce could be applied if necessary.
 
+Icons are provided for better and quick understanding of the selected restaurant. In the search result panel, if a restaurant got more visits, it will be displayed larger. There are 3 different size for the results, which indicate that the restaurant is popular, or very popular.
+
 ## Contact
 If you have any questions or you are simply interested in my profile, please send [a mail](mailto:min427@gmail.com) or let's connect on [LinkedIn](https://www.linkedin.com/in/chungmincheng/). I am always enthusiastic in new front-end technologies.
