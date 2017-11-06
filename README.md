@@ -49,7 +49,7 @@ In search bar, requests would be sent frequently if inputs are too many. Dynamic
 Icons are provided for better and quick understanding of the selected restaurant. In the search result panel, if a restaurant got more visits, it will be displayed larger. There are 3 different size for the results, which indicate that the restaurant is popular, or very popular.
 
 ## Tests
-Tests might not be verycomprehensive. Since this app uses [fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) but Node.js doesn't supoort it, some polyfills are installed and defined in **src/setupTests** file before actual tests. Enzyme and sinon are used for React test utilities, to help simulate DOM activities like brower events.
+Tests might not be verycomprehensive. Since this app uses [fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) but Node.js doesn't support it, some polyfills are installed and defined in **src/setupTests** file before actual tests. Enzyme and sinon are used for React test utilities, to help simulate DOM activities like brower events.
 
 ## Contact
 If you have any questions or you are simply interested in my profile, please send [a mail](mailto:min427@gmail.com) or let's connect on [LinkedIn](https://www.linkedin.com/in/chungmincheng/). I am always enthusiastic in new front-end technologies.
