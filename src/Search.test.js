@@ -2,6 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Search from './Search';
 
+it('should render Search without crashing', () => {
+  const div = document.createElement('div');
+
+  ReactDOM.render(<Search />, div);
+});
+
 it('should fire change event', () => {
   const onInputChange = sinon.spy();
   const searchBox = shallow(
