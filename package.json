@@ -5,12 +5,15 @@
   "main": "index.js",
   "dependencies": {
     "eslint": "^4.19.1",
+    "isomorphic-fetch": "^2.2.1",
     "promise-polyfill": "6.0.2",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "react-masonry-component": "^6.0.1",
     "react-redux": "^5.0.6",
     "react-scripts": "1.0.15",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "query-string": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -30,8 +33,6 @@
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.4.0",
     "jest-cli": "^21.2.1",
-    "query-string": "^5.0.1",
-    "react-masonry-component": "^6.0.1",
     "redux-devtools": "^3.4.1",
     "sinon": "^4.1.0"
   },

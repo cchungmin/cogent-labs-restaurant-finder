@@ -1,41 +1,48 @@
 import React, { Component } from 'react';
+import QueryString from 'query-string';
+import fetch from 'isomorphic-fetch';
 import logo from './logo.svg';
 import Search from './Search';
 import Results from './Results';
-import QueryString from 'query-string';
 import './App.css';
 
 const DEFAULT_CONFIG = {
   apiUrl: 'https://api.foursquare.com/v2',
   mapUrl: 'https://www.google.com/maps/search/?api=1&query=',
-  locale: 'en'
+  locale: 'en',
 };
 
 const CREDENTIALS = {
   v: '20171001',
   client_id: '42WJHV4VEVBQBUBZG41UYRSAQVGPB5TFRRGJLTE3WUDYAUNC',
-  client_secret: 'RYLXL42G0DK2NFXW0FGWCTH21C53EPXMOD1W1VGFEZWBPSZH'
+  client_secret: 'RYLXL42G0DK2NFXW0FGWCTH21C53EPXMOD1W1VGFEZWBPSZH',
 };
 
-var params = {
+const params = {
   ll: '35.648795,139.702237',
   radius: 1000,
   categoryId: '4d4b7105d754a06374d81259',
-  query: ''
+  query: '',
 };
 
 class App extends Component {
   constructor(props) {
-     super(props);
+    super(props);
 
-     this.API = FourSquareAPI();
-     this.state = {
-       venues: [],
-       pickedVenue: {},
-       isPanelVisible: false,
-       keyword: ''
-     };
-   }
+    this.API = FourSquareAPI();
+    this.GeolocationAPI = GeolocationAPI();
+  }
+
+  state = {
+    venues: [],
+    pickedVenue: {},
+    isPanelVisible: false,
+    keyword: '',
+  };
+
+  componentWillReceiveProps() {
+    this.getVenuesByKeyword();
+  }
 
   getVenuesByKeyword() {
     if (this.state.keyword.length > 0) {
@@ -43,8 +50,8 @@ class App extends Component {
     }
 
     this.API.search(params)
-      .then(res => {
-        let venues = res.response.venues;
+      .then((res) => {
+        const { venues } = res.response;
         let pickedVenue = venues[Math.floor(Math.random() * venues.length)];
         let pickedVenueMapUrl;
 
@@ -53,36 +60,32 @@ class App extends Component {
           pickedVenueMapUrl = params.ll;
         } else {
           this.setPickedVenue(pickedVenue);
-          pickedVenueMapUrl = pickedVenue.location.lat + ',' +
-                pickedVenue.location.lng;
+          pickedVenueMapUrl = `${pickedVenue.location.lat},${
+            pickedVenue.location.lng}`;
         }
 
         this.setState({
-          venues: venues,
-          pickedVenueMapUrl: DEFAULT_CONFIG.mapUrl + pickedVenueMapUrl
+          venues,
+          pickedVenueMapUrl: DEFAULT_CONFIG.mapUrl + pickedVenueMapUrl,
         });
       });
   }
 
   setPickedVenue(item) {
     this.API.getVenueDetail({ venue_id: item.id })
-      .then(res => {
+      .then((res) => {
         this.setState({
-          pickedVenue: res.response.venue
+          pickedVenue: res.response.venue,
         });
       });
   }
 
   closePanel(item) {
     this.setState({
-      isPanelVisible: false
+      isPanelVisible: false,
     });
 
     this.setPickedVenue(item);
-  }
-
-  componentDidMount() {
-    this.getVenuesByKeyword();
   }
 
   keyUpHandler() {
@@ -95,83 +98,94 @@ class App extends Component {
   }
 
   render() {
+    const {
+      pickedVenue,
+      pickedVenueMapUrl,
+    } = this.state;
     return (
       <main className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Cogent Labs Restaurant Finder</h1>
+          <h1 className="App-title">Restaurant Finder</h1>
         </header>
         <section className="App-intro">
           <h2>Hey, how about this one?</h2>
           <div className="picked-card mdl-card mdl-shadow--4dp">
             <div className="mdl-card__media">
-              { typeof this.state.pickedVenue.bestPhoto !== 'undefined' ?
-                <img src={ this.state.pickedVenue.bestPhoto.prefix + 'width300' + this.state.pickedVenue.bestPhoto.suffix } alt={this.state.pickedVenue.name}/> : null
+              { typeof pickedVenue.bestPhoto !== 'undefined' ?
+                <img src={`${pickedVenue.bestPhoto.prefix}width300${pickedVenue.bestPhoto.suffix}`} alt={pickedVenue.name} /> : null
               }
             </div>
             <div className="mdl-card__supporting-text">
-              <h5>{ this.state.pickedVenue.name }</h5>
-              <h4>{ this.state.pickedVenue.rating || 'N/A' }</h4>
-              <p>{ typeof this.state.pickedVenue.hours !== 'undefined' ? `In service. ${this.state.pickedVenue.hours.status}` : 'Out of service' }</p>
+              <h5>{ pickedVenue.name }</h5>
+              <h4>{ pickedVenue.rating || 'N/A' }</h4>
+              <p>{ typeof pickedVenue.hours !== 'undefined' ? `In service. ${pickedVenue.hours.status}` : 'Out of service' }</p>
             </div>
             <div className="mdl-card__supporting-text">
-                {
-                  typeof this.state.pickedVenue.categories !== 'undefined' ?
-                    this.state.pickedVenue.categories.map(item => {
-                      return (
-                        <span key={item.id}>
-                          <img className="picked-venue-icon"
-                               src={item.icon.prefix + '64' + item.icon.suffix}
-                               alt={item.icon.name} />
-                        </span>
-                      )
-                    }) : null
+              {
+                typeof pickedVenue.categories !== 'undefined' ?
+                  pickedVenue.categories.map(item => (
+                    <span key={item.id}>
+                      <img
+                        className="picked-venue-icon"
+                        src={`${item.icon.prefix}64${item.icon.suffix}`}
+                        alt={item.icon.name}
+                      />
+                    </span>
+                  )) : null
                 }
             </div>
           </div>
-          { typeof this.state.pickedVenue.contact !== 'undefined'?
-            <CtaContainer phone={ this.state.pickedVenue.contact.phone }
-                          mapUrl={ this.state.pickedVenueMapUrl }>
-            </CtaContainer>: null }
+          { typeof pickedVenue.contact !== 'undefined' ?
+            <CtaContainer
+              phone={pickedVenue.contact.phone}
+              mapUrl={pickedVenueMapUrl}
+            />: null }
         </section>
         <section className="search-panel">
           <h3>Or, type something here</h3>
           <Search
-             onChange={ (event) => this.changeHandler(event) }
-             onKeyUp={ () => this.keyUpHandler() }
+            onChange={event => this.changeHandler(event)}
+            onKeyUp={() => this.keyUpHandler()}
           />
         </section>
         <section className="results-panel">
           { this.state.isPanelVisible ?
-            <Results results={ this.state.venues }
-                     onClick={ (item) => this.closePanel(item) }>
-            </Results>: null }
+            <Results
+              results={this.state.venues}
+              onClick={item => this.closePanel(item)} 
+            /> : null }
         </section>
       </main>
     );
   }
 }
 
-function CtaContainer(props) {
+function CtaContainer() {
+  const { phone, mapUrl } = this.props;
   return (
     <div className="cta-container">
-      { typeof props.phone !== 'undefined'?
-        <PhoneCta phone={ props.phone }>
-        </PhoneCta>: null }
-      <a className={`mdl-button mdl-js-button mdl-button--raised ${ typeof props.phone === 'undefined' ? 'mdl-button--colored' : ''}`}
-         target="_blank"
-         href={ props.mapUrl }>
+      { typeof phone !== 'undefined' ?
+        <PhoneCta phone={phone} /> : null }
+      <a
+        className={`mdl-button mdl-js-button mdl-button--raised ${typeof phone === 'undefined' ? 'mdl-button--colored' : ''}`}
+        target="_blank"
+        href={mapUrl}
+      >
         Show Me the Map
       </a>
     </div>
   );
 }
 
-function PhoneCta(props) {
+function PhoneCta() {
+  const { phone } = this.props;
   return (
     <span>
-      <a className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-         href={ `tel:${props.phone}` }>
+      <a
+        className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+        href={`tel:${phone}`}
+      >
         Call Now
       </a>
       &nbsp; or &nbsp;
@@ -180,35 +194,48 @@ function PhoneCta(props) {
 }
 
 function Request(urlString) {
-  return new Promise(
-    function(resolve, reject) {
-      fetch(urlString)
-        .then((response) => response.json())
-        .then((response) => {
-          resolve(response);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    }
-  )
+  return new Promise((resolve, reject) => {
+    fetch(urlString)
+      .then(response => response.json())
+      .then(response => resolve(response))
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+function GeolocationAPI() {
+  const BASE_URL = 'https://www.googleapis.com/geolocation/v1/geolocate?key=';
+  const API_KEY = 'AIzaSyD7Jo1KupTPmsJ4OkVZ2zGsXwK2cHFkfHM';
+
+  return {
+    getLocation() {
+      return fetch(BASE_URL + API_KEY, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+    },
+  };
 }
 
 function FourSquareAPI() {
   return {
-    search: function(params) {
-      let urlString = DEFAULT_CONFIG.apiUrl + '/venues/search?' +
-        QueryString.stringify(params) + '&' + QueryString.stringify(CREDENTIALS);
+    search() {
+      const urlString = `${DEFAULT_CONFIG.apiUrl}/venues/search?` +
+      `${QueryString.stringify(params)}&${QueryString.stringify(CREDENTIALS)}`;
 
       return Request(urlString);
     },
-    getVenueDetail: function(params) {
-      let urlString = DEFAULT_CONFIG.apiUrl + '/venues/' +
-          params.venue_id + '?' + QueryString.stringify(CREDENTIALS);
+    getVenueDetail() {
+      const urlString = `${DEFAULT_CONFIG.apiUrl}/venues/` +
+      `${QueryString.stringify(params)}&${QueryString.stringify(CREDENTIALS)}`;
 
       return Request(urlString);
-    }
-  }
+    },
+  };
 }
 
 export default App;
