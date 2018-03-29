@@ -22,9 +22,25 @@ class Results extends Component {
       columnWidth: '.grid-sizer',
       percentPosition: true,
     };
+    const SingleResult = props => (
+      <li
+        className={props.sizeClass}
+        onClick={props.onClick}
+        onKeyDown={props.onClick}
+        role="menuitem"
+      >
+        <div className="result-inner">
+          <div className="result-inner-container">
+            {props.name}
+          </div>
+          <p>{props.mainCategoryName}</p>
+          <span>{props.count} { props.count <= 1 ? 'Checkin' : 'Checkins'}</span>
+        </div>
+      </li>
+    );
     return (
       <Masonry options={options} elementType="ul" className="grid">
-        <li className="grid-sizer"></li>
+        <li className="grid-sizer">&nbsp;</li>
         {results.map(item => (
           <SingleResult
             key={item.id}
@@ -38,32 +54,6 @@ class Results extends Component {
       </Masonry>
     );
   }
-}
-
-function SingleResult() {
-  const {
-    sizeClass,
-    name,
-    mainCategoryName,
-    count,
-    onClick,
-  } = this.props;
-  return (
-    <li
-      className={sizeClass}
-      onClick={onClick}
-      onKeyDown={this.handleKeyDown}
-      role="menuitem"
-    >
-      <div className="result-inner">
-        <div className="result-inner-container">
-          {name}
-        </div>
-        <p>{mainCategoryName}</p>
-        <span>{count} { count <= 1 ? 'Checkin' : 'Checkins'}</span>
-      </div>
-    </li>
-  );
 }
 
 export default Results;

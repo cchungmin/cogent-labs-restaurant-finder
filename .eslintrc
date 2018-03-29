@@ -5,6 +5,21 @@
     "node": true,
     "es6": true
   },
+  "globals": {
+    "it": true,
+    "expect": true,
+    "describe": true,
+    "jest": true,
+    "document": true,
+    "test": true,
+    "window": true,
+    "fetch": true,
+    "WebSocket": true,
+    "alert": true,
+    "URLSearchParams": true,
+    "sinon": true,
+    "shallow": true
+  },
   "rules": {
     "react/jsx-filename-extension": 0
   }
