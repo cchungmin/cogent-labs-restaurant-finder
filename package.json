@@ -7,13 +7,15 @@
     "eslint": "^4.19.1",
     "isomorphic-fetch": "^2.2.1",
     "promise-polyfill": "6.0.2",
+    "prop-types": "^15.6.1",
+    "query-string": "^5.0.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-masonry-component": "^6.0.1",
     "react-redux": "^5.0.6",
     "react-scripts": "1.0.15",
     "redux": "^3.7.2",
-    "query-string": "^5.0.1"
+    "whatwg-fetch": "^2.0.3"
   },
   "scripts": {
     "start": "react-scripts start",

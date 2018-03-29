@@ -25,6 +25,77 @@ const params = {
   query: '',
 };
 
+const CtaContainer = props => (
+  <div className="cta-container">
+    { typeof props.phone !== 'undefined' ?
+      <PhoneCta phone={props.phone} /> : null }
+    <a
+      className={`mdl-button mdl-js-button mdl-button--raised ${typeof props.phone === 'undefined' ? 'mdl-button--colored' : ''}`}
+      target="_blank"
+      href={props.mapUrl}
+    >
+      Show Me the Map
+    </a>
+  </div>
+);
+
+const PhoneCta = props => (
+  <span>
+    <a
+      className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+      href={`tel:${props.phone}`}
+    >
+      Call Now
+    </a>
+    &nbsp; or &nbsp;
+  </span>
+);
+
+function Request(urlString) {
+  return new Promise((resolve, reject) => {
+    fetch(urlString)
+      .then(response => response.json())
+      .then(response => resolve(response))
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+function GeolocationAPI() {
+  const BASE_URL = 'https://www.googleapis.com/geolocation/v1/geolocate?key=';
+  const API_KEY = 'AIzaSyD7Jo1KupTPmsJ4OkVZ2zGsXwK2cHFkfHM';
+
+  return {
+    getLocation() {
+      return fetch(BASE_URL + API_KEY, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+    },
+  };
+}
+
+function FourSquareAPI() {
+  return {
+    search() {
+      const urlString = `${DEFAULT_CONFIG.apiUrl}/venues/search?` +
+      `${QueryString.stringify(params)}&${QueryString.stringify(CREDENTIALS)}`;
+
+      return Request(urlString);
+    },
+    getVenueDetail({ venue_id: venueId }) {
+      const urlString = `${DEFAULT_CONFIG.apiUrl}/venues/` +
+      `${venueId}?${QueryString.stringify(CREDENTIALS)}`;
+
+      return Request(urlString);
+    },
+  };
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -40,7 +111,7 @@ class App extends Component {
     keyword: '',
   };
 
-  componentWillReceiveProps() {
+  componentDidMount() {
     this.getVenuesByKeyword();
   }
 
@@ -77,6 +148,8 @@ class App extends Component {
         this.setState({
           pickedVenue: res.response.venue,
         });
+
+        console.log(item);
       });
   }
 
@@ -93,8 +166,8 @@ class App extends Component {
     this.getVenuesByKeyword();
   }
 
-  changeHandler(event) {
-    this.setState({ keyword: event.target.value });
+  changeHandler(keyword) {
+    this.setState({ keyword });
   }
 
   render() {
@@ -140,102 +213,26 @@ class App extends Component {
             <CtaContainer
               phone={pickedVenue.contact.phone}
               mapUrl={pickedVenueMapUrl}
-            />: null }
+            /> : null }
         </section>
         <section className="search-panel">
           <h3>Or, type something here</h3>
           <Search
-            onChange={event => this.changeHandler(event)}
-            onKeyUp={() => this.keyUpHandler()}
+            keyword={this.state.keyword}
+            onSearchChange={event => this.changeHandler(event)}
+            onSearchKeyUp={event => this.keyUpHandler(event)}
           />
         </section>
         <section className="results-panel">
           { this.state.isPanelVisible ?
             <Results
               results={this.state.venues}
-              onClick={item => this.closePanel(item)} 
+              onClick={item => this.closePanel(item)}
             /> : null }
         </section>
       </main>
     );
   }
-}
-
-function CtaContainer() {
-  const { phone, mapUrl } = this.props;
-  return (
-    <div className="cta-container">
-      { typeof phone !== 'undefined' ?
-        <PhoneCta phone={phone} /> : null }
-      <a
-        className={`mdl-button mdl-js-button mdl-button--raised ${typeof phone === 'undefined' ? 'mdl-button--colored' : ''}`}
-        target="_blank"
-        href={mapUrl}
-      >
-        Show Me the Map
-      </a>
-    </div>
-  );
-}
-
-function PhoneCta() {
-  const { phone } = this.props;
-  return (
-    <span>
-      <a
-        className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-        href={`tel:${phone}`}
-      >
-        Call Now
-      </a>
-      &nbsp; or &nbsp;
-    </span>
-  );
-}
-
-function Request(urlString) {
-  return new Promise((resolve, reject) => {
-    fetch(urlString)
-      .then(response => response.json())
-      .then(response => resolve(response))
-      .catch((error) => {
-        reject(error);
-      });
-  });
-}
-
-function GeolocationAPI() {
-  const BASE_URL = 'https://www.googleapis.com/geolocation/v1/geolocate?key=';
-  const API_KEY = 'AIzaSyD7Jo1KupTPmsJ4OkVZ2zGsXwK2cHFkfHM';
-
-  return {
-    getLocation() {
-      return fetch(BASE_URL + API_KEY, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-    },
-  };
-}
-
-function FourSquareAPI() {
-  return {
-    search() {
-      const urlString = `${DEFAULT_CONFIG.apiUrl}/venues/search?` +
-      `${QueryString.stringify(params)}&${QueryString.stringify(CREDENTIALS)}`;
-
-      return Request(urlString);
-    },
-    getVenueDetail() {
-      const urlString = `${DEFAULT_CONFIG.apiUrl}/venues/` +
-      `${QueryString.stringify(params)}&${QueryString.stringify(CREDENTIALS)}`;
-
-      return Request(urlString);
-    },
-  };
 }
 
 export default App;
