@@ -1,11 +1,15 @@
 {
-  "javascript.validate.enable": true,
+  "javascript.validate.enable": false,
+  "flow.enabled": true,
+  "flow.pathToFlow": "${workspaceRoot}/node_modules/.bin/flow",
+  "flow.useNPMPackagedFlow": true,
   "files.exclude": {
     "**/.git": true,
     "**/.DS_Store": true,
     "node_modules": true,
     "package-lock.json": true,
     ".yarn-cache": true,
-    ".next": true
+    ".next": true,
+    "flow-typed": true
   }
 }
