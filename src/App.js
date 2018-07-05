@@ -22,7 +22,7 @@ const CREDENTIALS = {
 };
 
 const params = {
-  ll: '35.648795,139.702237',
+  ll: '',
   radius: 1000,
   categoryId: '4d4b7105d754a06374d81259',
   query: '',
@@ -116,7 +116,7 @@ type State = {
 
 class App extends React.Component<Props, State> {
   componentDidMount() {
-    this.getVenuesByKeyword();
+    this._getGeoLocation();
   }
 
   state = {
@@ -126,6 +126,23 @@ class App extends React.Component<Props, State> {
     keyword: '',
     pickedVenueMapUrl: '',
   };
+
+  _getGeoLocation() {
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        params.ll = `${pos.lat},${pos.lng}`
+        this.getVenuesByKeyword();
+      });
+    } else {
+      // Browser doesn't support Geolocation
+    }
+  }
 
   API = FourSquareAPI();
   GeolocationAPI = GeolocationAPI();
