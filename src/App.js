@@ -6,6 +6,7 @@ import fetch from 'isomorphic-fetch';
 import logo from './logo.svg';
 import Search from './Search';
 import Results from './Results';
+import settings from './settings.json';
 import './App.css';
 
 const DEFAULT_CONFIG = {
@@ -15,9 +16,9 @@ const DEFAULT_CONFIG = {
 };
 
 const CREDENTIALS = {
-  v: '20171001',
-  client_id: '42WJHV4VEVBQBUBZG41UYRSAQVGPB5TFRRGJLTE3WUDYAUNC',
-  client_secret: 'RYLXL42G0DK2NFXW0FGWCTH21C53EPXMOD1W1VGFEZWBPSZH',
+  v: settings.foursquare.v,
+  client_id: settings.foursquare.client_id,
+  client_secret: settings.foursquare.client_secret,
 };
 
 const params = {
@@ -26,6 +27,9 @@ const params = {
   categoryId: '4d4b7105d754a06374d81259',
   query: '',
 };
+
+const BASE_URL = 'https://www.googleapis.com/geolocation/v1/geolocate?key=';
+const API_KEY = settings.googleMap.apiKey;
 
 type CtaProps = {
   phone: number,
@@ -70,9 +74,6 @@ function Request(urlString) {
 }
 
 function GeolocationAPI() {
-  const BASE_URL = 'https://www.googleapis.com/geolocation/v1/geolocate?key=';
-  const API_KEY = 'AIzaSyD7Jo1KupTPmsJ4OkVZ2zGsXwK2cHFkfHM';
-
   return {
     getLocation() {
       return fetch(BASE_URL + API_KEY, {
