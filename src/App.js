@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+/* @flow */
+
+import * as React from 'react';
 import QueryString from 'query-string';
 import fetch from 'isomorphic-fetch';
 import logo from './logo.svg';
@@ -25,7 +27,12 @@ const params = {
   query: '',
 };
 
-const CtaContainer = props => (
+type CtaProps = {
+  phone: number,
+  mapUrl: string,
+};
+
+const CtaContainer = (props: CtaProps) => (
   <div className="cta-container">
     { typeof props.phone !== 'undefined' ?
       <PhoneCta phone={props.phone} /> : null }
@@ -87,7 +94,7 @@ function FourSquareAPI() {
 
       return Request(urlString);
     },
-    getVenueDetail({ venue_id: venueId }) {
+    getVenueDetail({ venue_id: venueId }: Object) {
       const urlString = `${DEFAULT_CONFIG.apiUrl}/venues/` +
       `${venueId}?${QueryString.stringify(CREDENTIALS)}`;
 
@@ -96,12 +103,19 @@ function FourSquareAPI() {
   };
 }
 
-class App extends Component {
-  constructor(props) {
-    super(props);
+type Props = {};
 
-    this.API = FourSquareAPI();
-    this.GeolocationAPI = GeolocationAPI();
+type State = {
+  venues: Array<string>,
+  pickedVenue: Object,
+  isPanelVisible: boolean,
+  keyword: string,
+  pickedVenueMapUrl: string,
+};
+
+class App extends React.Component<Props, State> {
+  componentDidMount() {
+    this.getVenuesByKeyword();
   }
 
   state = {
@@ -109,18 +123,18 @@ class App extends Component {
     pickedVenue: {},
     isPanelVisible: false,
     keyword: '',
+    pickedVenueMapUrl: '',
   };
 
-  componentDidMount() {
-    this.getVenuesByKeyword();
-  }
+  API = FourSquareAPI();
+  GeolocationAPI = GeolocationAPI();
 
   getVenuesByKeyword() {
     if (this.state.keyword.length > 0) {
       params.query = this.state.keyword;
     }
 
-    this.API.search(params)
+    this.API.search(params: Object)
       .then((res) => {
         const { venues } = res.response;
         let pickedVenue = venues[Math.floor(Math.random() * venues.length)];
@@ -142,7 +156,7 @@ class App extends Component {
       });
   }
 
-  setPickedVenue(item) {
+  setPickedVenue(item: string) {
     this.API.getVenueDetail({ venue_id: item.id })
       .then((res) => {
         this.setState({
@@ -153,7 +167,7 @@ class App extends Component {
       });
   }
 
-  closePanel(item) {
+  closePanel(item: string) {
     this.setState({
       isPanelVisible: false,
     });
@@ -166,7 +180,7 @@ class App extends Component {
     this.getVenuesByKeyword();
   }
 
-  changeHandler(keyword) {
+  changeHandler(keyword: string) {
     this.setState({ keyword });
   }
 
