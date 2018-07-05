@@ -7,15 +7,15 @@
     "eslint": "^4.19.1",
     "isomorphic-fetch": "^2.2.1",
     "promise-polyfill": "6.0.2",
-    "prop-types": "^15.6.1",
+    "prop-types": "^15.6.2",
     "query-string": "^5.0.1",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-masonry-component": "^6.0.1",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-masonry-component": "^6.2.1",
     "react-redux": "^5.0.6",
-    "react-scripts": "1.0.15",
+    "react-scripts": "^1.1.4",
     "redux": "^3.7.2",
-    "whatwg-fetch": "^2.0.3"
+    "whatwg-fetch": "^2.0.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -24,19 +24,22 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.2",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.5",
+    "babel-preset-flow": "^6.23.0",
     "browserify": "^14.5.0",
     "commonjs": "0.0.1",
-    "enzyme": "^3.1.0",
-    "enzyme-adapter-react-16": "^1.0.3",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jsx-a11y": "^6.0.2",
-    "eslint-plugin-react": "^7.4.0",
-    "jest-cli": "^21.2.1",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.1.0",
+    "eslint-plugin-react": "^7.10.0",
+    "flow-bin": "^0.75.0",
+    "jest-cli": "^23.3.0",
     "redux-devtools": "^3.4.1",
-    "sinon": "^4.1.0"
+    "sinon": "^4.5.0"
   },
   "babel": {
     "presets": [
