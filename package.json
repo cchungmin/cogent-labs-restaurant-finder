@@ -9,6 +9,7 @@
     "promise-polyfill": "6.0.2",
     "prop-types": "^15.6.2",
     "query-string": "^5.0.1",
+    "radium": "^0.24.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-masonry-component": "^6.2.1",
