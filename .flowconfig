@@ -1,0 +1,11 @@
+[ignore]
+dist
+.*/node_modules/*
+
+[include]
+
+[libs]
+flow-typed/
+
+[options]
+esproposal.decorators=ignore
