@@ -152,7 +152,7 @@ class App extends React.Component<Props, State> {
       params.query = this.state.keyword;
     }
 
-    this.API.search(params: Object)
+    this.API.search(params)
       .then((res) => {
         const { venues } = res.response;
         let pickedVenue = venues[Math.floor(Math.random() * venues.length)];
