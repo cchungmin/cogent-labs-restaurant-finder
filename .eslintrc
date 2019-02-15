@@ -2,6 +2,12 @@
   "parser": "babel-eslint",
   "extends": "airbnb",
   "plugins": ["react-extra", "flowtype"],
+  "settings": {
+    "react": {
+      "version": "16.4",
+      "flowVersion": "0.93"
+    }
+  },
   "env": {
     "browser": true,
     "node": true,
@@ -23,6 +29,13 @@
     "shallow": true
   },
   "rules": {
-    "react/jsx-filename-extension": 0
+    "react/jsx-filename-extension": 0,
+    "max-len": [
+      1,
+      {
+        "code": 80,
+        "tabWidth": 2
+      }
+    ]
   }
 }
