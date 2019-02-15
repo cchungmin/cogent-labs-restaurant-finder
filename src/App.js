@@ -39,7 +39,7 @@ type CtaProps = {
 const CtaContainer = (props: CtaProps) => (
   <div className="cta-container">
     { typeof props.phone !== 'undefined' ?
-      <PhoneCta phone={props.phone} /> : null }
+        <PhoneCta phone={props.phone} /> : null }
     <a
       className={`mdl-button mdl-js-button mdl-button--raised ${typeof props.phone === 'undefined' ? 'mdl-button--colored' : ''}`}
       target="_blank"
@@ -63,7 +63,7 @@ const PhoneCta = props => (
 );
 
 function Request(urlString) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     fetch(urlString)
       .then(response => response.json())
       .then(response => resolve(response))
@@ -152,40 +152,42 @@ class App extends React.Component<Props, State> {
       params.query = this.state.keyword;
     }
 
-    this.API.search(params)
+    this.API.search()
       .then((res) => {
-        const { venues } = res.response;
-        let pickedVenue = venues[Math.floor(Math.random() * venues.length)];
-        let pickedVenueMapUrl;
+        if (res && res.response) {
+          const { venues } = res.response;
+          let pickedVenue = venues[Math.floor(Math.random() * venues.length)];
+          let pickedVenueMapUrl;
 
-        if (typeof pickedVenue === 'undefined') {
-          pickedVenue = { name: 'Sorry, no result...' };
-          pickedVenueMapUrl = params.ll;
-        } else {
-          this.setPickedVenue(pickedVenue);
-          pickedVenueMapUrl = `${pickedVenue.location.lat},${
-            pickedVenue.location.lng}`;
+          if (typeof pickedVenue === 'undefined') {
+            pickedVenue = { name: 'Sorry, no result...' };
+            pickedVenueMapUrl = params.ll;
+          } else {
+            this.setPickedVenue(pickedVenue);
+            pickedVenueMapUrl = `${pickedVenue.location.lat},${
+              pickedVenue.location.lng}`;
+          }
+
+          this.setState({
+            venues,
+            pickedVenueMapUrl: DEFAULT_CONFIG.mapUrl + pickedVenueMapUrl,
+          });
         }
-
-        this.setState({
-          venues,
-          pickedVenueMapUrl: DEFAULT_CONFIG.mapUrl + pickedVenueMapUrl,
-        });
       });
   }
 
-  setPickedVenue(item: string) {
+  setPickedVenue(item: Object) {
     this.API.getVenueDetail({ venue_id: item.id })
       .then((res) => {
-        this.setState({
-          pickedVenue: res.response.venue,
-        });
-
-        console.log(item);
+        if (res && res.response) {
+          this.setState({
+            pickedVenue: res.response.venue,
+          });
+        }
       });
   }
 
-  closePanel(item: string) {
+  closePanel(item: Object) {
     this.setState({
       isPanelVisible: false,
     });
@@ -193,12 +195,12 @@ class App extends React.Component<Props, State> {
     this.setPickedVenue(item);
   }
 
-  keyUpHandler() {
+  keyUpHandler = () => {
     this.setState({ isPanelVisible: true });
     this.getVenuesByKeyword();
   }
 
-  changeHandler(keyword: string) {
+  changeHandler = (keyword: string) => {
     this.setState({ keyword });
   }
 
@@ -238,7 +240,7 @@ class App extends React.Component<Props, State> {
                       />
                     </span>
                   )) : null
-                }
+              }
             </div>
           </div>
           { typeof pickedVenue.contact !== 'undefined' ?
@@ -251,8 +253,8 @@ class App extends React.Component<Props, State> {
           <h3>Or, type something here</h3>
           <Search
             keyword={this.state.keyword}
-            onSearchChange={event => this.changeHandler(event)}
-            onSearchKeyUp={event => this.keyUpHandler(event)}
+            onSearchChange={this.changeHandler}
+            onSearchKeyUp={this.keyUpHandler}
           />
         </section>
         <section className="results-panel">
