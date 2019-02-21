@@ -3,7 +3,9 @@
 import * as React from 'react';
 import QueryString from 'query-string';
 import fetch from 'isomorphic-fetch';
+
 import logo from './logo.svg';
+import LuckyPicked from './LuckyPicked';
 import Search from './Search';
 import Results from './Results';
 import settings from './settings.json';
@@ -30,49 +32,6 @@ const params = {
 
 const BASE_URL = 'https://www.googleapis.com/geolocation/v1/geolocate?key=';
 const API_KEY = settings.googleMap.apiKey;
-
-type CtaProps = {
-  phone: number,
-  mapUrl?: string,
-};
-
-type PhoneCtaProps = {
-  phone: number,
-};
-
-const CtaContainer = ({ phone, mapUrl }: CtaProps) => (
-  <div className="cta-container">
-    {
-      typeof phone !== 'undefined' ?
-        <PhoneCta phone={phone} /> : null
-    }
-    <a
-      className={`mdl-button mdl-js-button mdl-button--raised ${typeof phone === 'undefined' ? 'mdl-button--colored' : ''}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      href={mapUrl}
-    >
-      Show Me the Map
-    </a>
-  </div>
-);
-
-CtaContainer.defaultProps = {
-  mapUrl: '',
-};
-
-const PhoneCta = ({ phone }: PhoneCtaProps) => (
-  <span>
-    <a
-      className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-      href={`tel:${phone}`}
-      rel="noopener noreferrer"
-    >
-      Call Now
-    </a>
-    &nbsp; or &nbsp;
-  </span>
-);
 
 function Request(urlString) {
   return new Promise<void>((resolve, reject) => {
@@ -236,41 +195,10 @@ class App extends React.Component<Props, State> {
         </header>
         <section className="App-intro">
           <h2>Hey, how about this one?</h2>
-          <div className="picked-card mdl-card mdl-shadow--4dp">
-            <div className="mdl-card__media">
-              { typeof pickedVenue.bestPhoto !== 'undefined' ?
-                <img src={`${pickedVenue.bestPhoto.prefix}width300${pickedVenue.bestPhoto.suffix}`} alt={pickedVenue.name} /> : null
-              }
-            </div>
-            <div className="mdl-card__supporting-text">
-              <h5>{ pickedVenue.name }</h5>
-              <h4>{ pickedVenue.rating || 'N/A' }</h4>
-              <p>{ typeof pickedVenue.hours !== 'undefined' ? `In service. ${pickedVenue.hours.status}` : 'Out of service' }</p>
-            </div>
-            <div className="mdl-card__supporting-text">
-              {
-                typeof pickedVenue.categories !== 'undefined' ?
-                  pickedVenue.categories.map(item => (
-                    <span key={item.id}>
-                      <img
-                        className="picked-venue-icon"
-                        src={`${item.icon.prefix}64${item.icon.suffix}`}
-                        alt={item.icon.name}
-                      />
-                    </span>
-                  )) : null
-              }
-            </div>
-          </div>
-          {
-            typeof pickedVenue.contact !== 'undefined' ?
-              (
-                <CtaContainer
-                  phone={pickedVenue.contact.phone}
-                  mapUrl={pickedVenueMapUrl}
-                />
-              ) : null
-          }
+          <LuckyPicked
+            pickedVenue={pickedVenue}
+            pickedVenueMapUrl={pickedVenueMapUrl}
+          />
         </section>
         <section className="search-panel">
           <h3>Or, type something here</h3>

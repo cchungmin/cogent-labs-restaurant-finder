@@ -1,6 +1,11 @@
 /* flow */
 
 import React from 'react';
+import {
+  Input,
+  InputLabel,
+  Grid,
+} from '@material-ui/core';
 import './Search.css';
 
 type Props = {
@@ -23,22 +28,24 @@ class Search extends React.Component<Props> {
   render() {
     const { keyword } = this.props;
     return (
-      <div className="mdl-textfield mdl-js-textfield">
-        <label
-          className="mdl-textfield__label"
-          htmlFor="search-bar"
-        >
-          Your favorite food type?
-          <input
+      <Grid direction="column">
+        <Grid>
+          <InputLabel
+            htmlFor="search-bar"
+          >
+            Your favorite food type?
+          </InputLabel>
+        </Grid>
+        <Grid>
+          <Input
             id="search-bar"
             type="text"
-            className="App-search-bar mdl-textfield__input"
             onChange={this.handleChange}
             onKeyUp={this.handleKeyUp}
             value={keyword}
           />
-        </label>
-      </div>
+        </Grid>
+      </Grid>
     );
   }
 }
