@@ -17,9 +17,10 @@ import {
 const CARD_STYLES = {
   card: {
     maxWidth: 345,
+    margin: '20px auto 30px',
   },
-  media: {
-    height: 140,
+  actions: {
+    justifyContent: 'center',
   },
 };
 
@@ -65,56 +66,59 @@ const PhoneCta = ({ phone }: PhoneCtaProps) => (
   </span>
 );
 
-export default withStyles(CARD_STYLES)(({ pickedVenue, pickedVenueMapUrl }) => (
-  <Card className="picked-card">
-    <CardActionArea>
-      <CardMedia>
-        { typeof pickedVenue.bestPhoto !== 'undefined' ?
-          (
-            <img
-              src={`${pickedVenue.bestPhoto.prefix}width300${pickedVenue.bestPhoto.suffix}`}
-              alt={pickedVenue.name}
-            />
-          ) : null
-        }
-      </CardMedia>
-      <CardContent>
-        <Typography>
-          <h5>{ pickedVenue.name }</h5>
-          <h4>{ pickedVenue.rating || 'N/A' }</h4>
-          <p>
-            {
-              typeof pickedVenue.hours !== 'undefined' ?
-                `In service. ${pickedVenue.hours.status}` : 'Out of service'
-            }
-          </p>
-        </Typography>
-        <Typography>
-          {
-            typeof pickedVenue.categories !== 'undefined' ?
-              pickedVenue.categories.map(item => (
-                <span key={item.id}>
-                  <img
-                    className="picked-venue-icon"
-                    src={`${item.icon.prefix}64${item.icon.suffix}`}
-                    alt={item.icon.name}
-                  />
-                </span>
-              )) : null
+
+export default withStyles(CARD_STYLES)(
+  ({ pickedVenue, pickedVenueMapUrl, classes: { card, actions } }) => (
+    <Card className={card}>
+      <CardActionArea>
+        <CardMedia>
+          { typeof pickedVenue.bestPhoto !== 'undefined' ?
+            (
+              <img
+                src={`${pickedVenue.bestPhoto.prefix}width300${pickedVenue.bestPhoto.suffix}`}
+                alt={pickedVenue.name}
+              />
+            ) : null
           }
-        </Typography>
-      </CardContent>
-    </CardActionArea>
-    <CardActions>
-      {
-        typeof pickedVenue.contact !== 'undefined' ?
-          (
-            <CtaContainer
-              phone={pickedVenue.contact.phone}
-              mapUrl={pickedVenueMapUrl}
-            />
-          ) : null
-      }
-    </CardActions>
-  </Card>
-));
+        </CardMedia>
+        <CardContent>
+          <Typography>
+            <h5>{ pickedVenue.name }</h5>
+            <h4>{ pickedVenue.rating || 'N/A' }</h4>
+            <p>
+              {
+                typeof pickedVenue.hours !== 'undefined' ?
+                  `In service. ${pickedVenue.hours.status}` : 'Out of service'
+              }
+            </p>
+          </Typography>
+          <Typography>
+            {
+              typeof pickedVenue.categories !== 'undefined' ?
+                pickedVenue.categories.map(item => (
+                  <span key={item.id}>
+                    <img
+                      className="picked-venue-icon"
+                      src={`${item.icon.prefix}64${item.icon.suffix}`}
+                      alt={item.icon.name}
+                    />
+                  </span>
+                )) : null
+            }
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+      <CardActions className={actions}>
+        {
+          typeof pickedVenue.contact !== 'undefined' ?
+            (
+              <CtaContainer
+                phone={pickedVenue.contact.phone}
+                mapUrl={pickedVenueMapUrl}
+              />
+            ) : null
+        }
+      </CardActions>
+    </Card>
+  ),
+);
