@@ -1,6 +1,7 @@
 /* @flow */
 
 import * as React from 'react';
+import debounce from 'lodash.debounce';
 
 import {
   searchRestaurants,
@@ -81,7 +82,7 @@ class App extends React.Component<Props, State> {
 
   keyUpHandler = () => {
     this.setState({ isPanelVisible: true });
-    this.getVenuesByKeyword();
+    debounce(() => this.getVenuesByKeyword(), 800);
   }
 
   changeHandler = (keyword: string) => {
