@@ -8,6 +8,7 @@
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.9.1",
     "isomorphic-fetch": "^2.2.1",
+    "lodash.debounce": "^4.0.8",
     "promise-polyfill": "6.0.2",
     "prop-types": "^15.6.2",
     "query-string": "^6.2.0",
