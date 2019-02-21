@@ -1,9 +1,17 @@
-import React, { Component } from 'react';
+/* @flow */
+
+import React from 'react';
+// $FlowFixMe
 import Masonry from 'react-masonry-component';
 import './Results.css';
 
-class Results extends Component {
-  static getSizeClassName(num) {
+type Props = {
+  results: Array<Object>,
+  onClick: Function,
+};
+
+class Results extends React.Component<Props> {
+  static getSizeClassName(num: number) {
     const className = 'grid-item';
 
     if (num > 10000) {

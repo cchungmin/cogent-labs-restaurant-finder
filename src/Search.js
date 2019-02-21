@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+/* flow */
+
+import React from 'react';
 import './Search.css';
 
-class Search extends Component {
-  static propTypes = {
-    keyword: PropTypes.string,
-    onSearchChange: PropTypes.func,
-    onSearchKeyUp: PropTypes.func,
-  };
+type Props = {
+  keyword: string,
+  onSearchChange: Function,
+  onSearchKeyUp: Function,
+}
 
+class Search extends React.Component<Props> {
   static defaultProps = {
     keyword: '',
     onSearchChange: () => ('Hello'),
