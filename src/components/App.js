@@ -1,79 +1,17 @@
 /* @flow */
 
 import * as React from 'react';
-import QueryString from 'query-string';
-import fetch from 'isomorphic-fetch';
 
+import {
+  searchRestaurants,
+  getRestaurantDetail,
+  urlConfig,
+} from '../utils/apis';
 import logo from './logo.svg';
 import LuckyPicked from './LuckyPicked';
 import Search from './Search';
 import Results from './Results';
-import settings from '../settings.json';
 import './App.css';
-
-const DEFAULT_CONFIG = {
-  apiUrl: 'https://api.foursquare.com/v2',
-  mapUrl: 'https://www.google.com/maps/search/?api=1&query=',
-  locale: 'en',
-};
-
-const CREDENTIALS = {
-  v: settings.foursquare.v,
-  client_id: settings.foursquare.client_id,
-  client_secret: settings.foursquare.client_secret,
-};
-
-const params = {
-  ll: '',
-  radius: 1000,
-  categoryId: '4d4b7105d754a06374d81259',
-  query: '',
-};
-
-const BASE_URL = 'https://www.googleapis.com/geolocation/v1/geolocate?key=';
-const API_KEY = settings.googleMap.apiKey;
-
-function Request(urlString) {
-  return new Promise<void>((resolve, reject) => {
-    fetch(urlString)
-      .then(response => response.json())
-      .then(response => resolve(response))
-      .catch((error) => {
-        reject(error);
-      });
-  });
-}
-
-function GeolocationAPI() {
-  return {
-    getLocation() {
-      return fetch(BASE_URL + API_KEY, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-    },
-  };
-}
-
-function FourSquareAPI() {
-  return {
-    search() {
-      const urlString = `${DEFAULT_CONFIG.apiUrl}/venues/search?` +
-      `${QueryString.stringify(params)}&${QueryString.stringify(CREDENTIALS)}`;
-
-      return Request(urlString);
-    },
-    getVenueDetail({ venue_id: venueId }: Object) {
-      const urlString = `${DEFAULT_CONFIG.apiUrl}/venues/` +
-      `${venueId}?${QueryString.stringify(CREDENTIALS)}`;
-
-      return Request(urlString);
-    },
-  };
-}
 
 type Props = {};
 
@@ -83,6 +21,7 @@ type State = {
   isPanelVisible: boolean,
   keyword: string,
   pickedVenueMapUrl: string,
+  ll: string,
 };
 
 class App extends React.Component<Props, State> {
@@ -96,21 +35,16 @@ class App extends React.Component<Props, State> {
     isPanelVisible: false,
     keyword: '',
     pickedVenueMapUrl: '',
+    ll: '',
   };
 
-  API = FourSquareAPI();
-
-  GeolocationAPI = GeolocationAPI();
-
   componentDidMount() {
-    this._getGeoLocation();
+    this._init();
   }
 
-  getVenuesByKeyword() {
-    const { keyword } = this.state;
-    if (keyword.length > 0) params.query = keyword;
-
-    this.API.search()
+  getVenuesByKeyword = () => {
+    const { keyword, ll } = this.state;
+    searchRestaurants(keyword, ll)
       .then((res) => {
         if (res && res.response) {
           const { venues } = res.response;
@@ -119,7 +53,7 @@ class App extends React.Component<Props, State> {
 
           if (typeof pickedVenue === 'undefined') {
             pickedVenue = { name: 'Sorry, no result...' };
-            pickedVenueMapUrl = params.ll;
+            pickedVenueMapUrl = ll;
           } else {
             this.setPickedVenue(pickedVenue);
             pickedVenueMapUrl = `${pickedVenue.location.lat},${
@@ -128,14 +62,14 @@ class App extends React.Component<Props, State> {
 
           this.setState({
             venues,
-            pickedVenueMapUrl: DEFAULT_CONFIG.mapUrl + pickedVenueMapUrl,
+            pickedVenueMapUrl: urlConfig.mapUrl + pickedVenueMapUrl,
           });
         }
       });
   }
 
-  setPickedVenue(item: Object) {
-    this.API.getVenueDetail({ venue_id: item.id })
+  setPickedVenue = (item: Object) => {
+    getRestaurantDetail({ venue_id: item.id })
       .then((res) => {
         if (res && res.response) {
           this.setState({
@@ -154,7 +88,7 @@ class App extends React.Component<Props, State> {
     this.setState({ keyword });
   }
 
-  closePanel(item: Object) {
+  closePanel = (item: Object) => {
     this.setState({
       isPanelVisible: false,
     });
@@ -162,7 +96,7 @@ class App extends React.Component<Props, State> {
     this.setPickedVenue(item);
   }
 
-  _getGeoLocation() {
+  _init() {
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -170,8 +104,9 @@ class App extends React.Component<Props, State> {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
-
-        params.ll = `${pos.lat},${pos.lng}`;
+        this.setState({
+          ll: `${pos.lat},${pos.lng}`,
+        });
         this.getVenuesByKeyword();
       });
     } else {
