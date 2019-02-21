@@ -8,7 +8,7 @@ import logo from './logo.svg';
 import LuckyPicked from './LuckyPicked';
 import Search from './Search';
 import Results from './Results';
-import settings from './settings.json';
+import settings from '../settings.json';
 import './App.css';
 
 const DEFAULT_CONFIG = {
