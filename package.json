@@ -4,6 +4,7 @@
   "private": true,
   "main": "index.js",
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.9.1",
     "isomorphic-fetch": "^2.2.1",
