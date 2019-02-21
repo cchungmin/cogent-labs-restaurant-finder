@@ -33,28 +33,40 @@ const API_KEY = settings.googleMap.apiKey;
 
 type CtaProps = {
   phone: number,
-  mapUrl: string,
+  mapUrl?: string,
 };
 
-const CtaContainer = (props: CtaProps) => (
+type PhoneCtaProps = {
+  phone: number,
+};
+
+const CtaContainer = ({ phone, mapUrl }: CtaProps) => (
   <div className="cta-container">
-    { typeof props.phone !== 'undefined' ?
-        <PhoneCta phone={props.phone} /> : null }
+    {
+      typeof phone !== 'undefined' ?
+        <PhoneCta phone={phone} /> : null
+    }
     <a
-      className={`mdl-button mdl-js-button mdl-button--raised ${typeof props.phone === 'undefined' ? 'mdl-button--colored' : ''}`}
+      className={`mdl-button mdl-js-button mdl-button--raised ${typeof phone === 'undefined' ? 'mdl-button--colored' : ''}`}
       target="_blank"
-      href={props.mapUrl}
+      rel="noopener noreferrer"
+      href={mapUrl}
     >
       Show Me the Map
     </a>
   </div>
 );
 
-const PhoneCta = props => (
+CtaContainer.defaultProps = {
+  mapUrl: '',
+};
+
+const PhoneCta = ({ phone }: PhoneCtaProps) => (
   <span>
     <a
       className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-      href={`tel:${props.phone}`}
+      href={`tel:${phone}`}
+      rel="noopener noreferrer"
     >
       Call Now
     </a>
@@ -115,8 +127,8 @@ type State = {
 };
 
 class App extends React.Component<Props, State> {
-  componentDidMount() {
-    this._getGeoLocation();
+  static defautProps = {
+    mapUrl: '',
   }
 
   state = {
@@ -127,30 +139,17 @@ class App extends React.Component<Props, State> {
     pickedVenueMapUrl: '',
   };
 
-  _getGeoLocation() {
-    // Try HTML5 geolocation.
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        var pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-
-        params.ll = `${pos.lat},${pos.lng}`
-        this.getVenuesByKeyword();
-      });
-    } else {
-      // Browser doesn't support Geolocation
-    }
-  }
-
   API = FourSquareAPI();
+
   GeolocationAPI = GeolocationAPI();
 
+  componentDidMount() {
+    this._getGeoLocation();
+  }
+
   getVenuesByKeyword() {
-    if (this.state.keyword.length > 0) {
-      params.query = this.state.keyword;
-    }
+    const { keyword } = this.state;
+    if (keyword.length > 0) params.query = keyword;
 
     this.API.search()
       .then((res) => {
@@ -187,14 +186,6 @@ class App extends React.Component<Props, State> {
       });
   }
 
-  closePanel(item: Object) {
-    this.setState({
-      isPanelVisible: false,
-    });
-
-    this.setPickedVenue(item);
-  }
-
   keyUpHandler = () => {
     this.setState({ isPanelVisible: true });
     this.getVenuesByKeyword();
@@ -204,10 +195,38 @@ class App extends React.Component<Props, State> {
     this.setState({ keyword });
   }
 
+  closePanel(item: Object) {
+    this.setState({
+      isPanelVisible: false,
+    });
+
+    this.setPickedVenue(item);
+  }
+
+  _getGeoLocation() {
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+
+        params.ll = `${pos.lat},${pos.lng}`;
+        this.getVenuesByKeyword();
+      });
+    } else {
+      // Browser doesn't support Geolocation
+    }
+  }
+
   render() {
     const {
       pickedVenue,
       pickedVenueMapUrl,
+      keyword,
+      isPanelVisible,
+      venues,
     } = this.state;
     return (
       <main className="App">
@@ -243,26 +262,34 @@ class App extends React.Component<Props, State> {
               }
             </div>
           </div>
-          { typeof pickedVenue.contact !== 'undefined' ?
-            <CtaContainer
-              phone={pickedVenue.contact.phone}
-              mapUrl={pickedVenueMapUrl}
-            /> : null }
+          {
+            typeof pickedVenue.contact !== 'undefined' ?
+              (
+                <CtaContainer
+                  phone={pickedVenue.contact.phone}
+                  mapUrl={pickedVenueMapUrl}
+                />
+              ) : null
+          }
         </section>
         <section className="search-panel">
           <h3>Or, type something here</h3>
           <Search
-            keyword={this.state.keyword}
+            keyword={keyword}
             onSearchChange={this.changeHandler}
             onSearchKeyUp={this.keyUpHandler}
           />
         </section>
         <section className="results-panel">
-          { this.state.isPanelVisible ?
-            <Results
-              results={this.state.venues}
-              onClick={item => this.closePanel(item)}
-            /> : null }
+          {
+            isPanelVisible ?
+              (
+                <Results
+                  results={venues}
+                  onClick={item => this.closePanel(item)}
+                />
+              ) : null
+          }
         </section>
       </main>
     );

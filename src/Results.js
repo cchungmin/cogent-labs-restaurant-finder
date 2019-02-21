@@ -13,13 +13,8 @@ type Props = {
 class Results extends React.Component<Props> {
   static getSizeClassName(num: number) {
     const className = 'grid-item';
-
-    if (num > 10000) {
-      return `${className} very-popular`;
-    } else if (num < 10000 && num > 5000) {
-      return `${className} popular`;
-    }
-
+    if (num > 10000) return `${className} very-popular`;
+    if (num < 10000 && num > 5000) return `${className} popular`;
     return className;
   }
 
@@ -42,7 +37,11 @@ class Results extends React.Component<Props> {
             {props.name}
           </div>
           <p>{props.mainCategoryName}</p>
-          <span>{props.count} { props.count <= 1 ? 'Checkin' : 'Checkins'}</span>
+          <span>
+            {props.count}
+            &nbsp;
+            { props.count <= 1 ? 'Checkin' : 'Checkins'}
+          </span>
         </div>
       </li>
     );

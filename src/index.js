@@ -1,3 +1,5 @@
+/* flow */
+
 import 'whatwg-fetch';
 import 'promise-polyfill';
 import React from 'react';
