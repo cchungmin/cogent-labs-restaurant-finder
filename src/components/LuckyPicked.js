@@ -71,28 +71,29 @@ export default withStyles(CARD_STYLES)(
   ({ pickedVenue, pickedVenueMapUrl, classes: { card, actions } }) => (
     <Card className={card}>
       <CardActionArea>
-        <CardMedia>
-          { typeof pickedVenue.bestPhoto !== 'undefined' ?
+        {
+          pickedVenue.bestPhoto ?
             (
-              <img
-                src={`${pickedVenue.bestPhoto.prefix}width300${pickedVenue.bestPhoto.suffix}`}
+              <CardMedia
+                component="img"
+                image={`${pickedVenue.bestPhoto.prefix}width300${pickedVenue.bestPhoto.suffix}`}
                 alt={pickedVenue.name}
               />
             ) : null
-          }
-        </CardMedia>
+        }
         <CardContent>
-          <Typography>
-            <h5>{ pickedVenue.name }</h5>
+          <div>
+            <h3>{ pickedVenue.name }</h3>
             <h4>{ pickedVenue.rating || 'N/A' }</h4>
-            <p>
+            <Typography>
               {
                 typeof pickedVenue.hours !== 'undefined' ?
                   `In service. ${pickedVenue.hours.status}` : 'Out of service'
               }
-            </p>
-          </Typography>
-          <Typography>
+            </Typography>
+          </div>
+          <br />
+          <div>
             {
               typeof pickedVenue.categories !== 'undefined' ?
                 pickedVenue.categories.map(item => (
@@ -105,7 +106,7 @@ export default withStyles(CARD_STYLES)(
                   </span>
                 )) : null
             }
-          </Typography>
+          </div>
         </CardContent>
       </CardActionArea>
       <CardActions className={actions}>

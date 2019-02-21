@@ -28,15 +28,15 @@ class Search extends React.Component<Props> {
   render() {
     const { keyword } = this.props;
     return (
-      <Grid direction="column">
-        <Grid>
+      <Grid container direction="column">
+        <Grid item>
           <InputLabel
             htmlFor="search-bar"
           >
             Your favorite food type?
           </InputLabel>
         </Grid>
-        <Grid>
+        <Grid item>
           <Input
             id="search-bar"
             type="text"
